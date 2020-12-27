@@ -17,7 +17,7 @@
 
 function [ opt, x, G ] = L_BFGS (s, sigma, gamma, x0, m, epsilon, f, g, H)
     S    = {}; % store all s^k = difference of x
-    Y    = {}; % store all y^k = defierence of gradient
+    Y    = {}; % store all y^k = difference of gradient
     RHO  = {}; % store all 1/<s^k, y^k> to reduce the computation
     G    = {}; % record gradient norm
     x    = x0; % initialize x
