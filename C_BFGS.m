@@ -12,9 +12,9 @@
 %%  7.   delta, skipping tolerance
 %%  8.       f, objective function
 %%  9.       g, gradient function
-%%
+%% 10.     eta, pw search lower bound scaling factor
 
-function [ opt, x, G ] = C_BFGS(s, sigma, gamma, x0, m, epsilon, f, g)
+function [ opt, x, G ] = C_BFGS(s, sigma, gamma, x0, m, epsilon, f, g, eta)
     
     % memoization
     
@@ -102,7 +102,7 @@ function [ opt, x, G ] = C_BFGS(s, sigma, gamma, x0, m, epsilon, f, g)
         d = -gamma_k*grad - [cell2mat(S), gamma_k * cell2mat(Y)] * p;
         
         % backtracking and update
-        alpha = backtracking(s, sigma, gamma, x, d, grad, f);
+        alpha = pw_search(s, sigma, gamma, eta, x, d, f, g);
         pgrad = grad;
         px    = x;
         x     = x + alpha * d;
