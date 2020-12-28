@@ -9,13 +9,14 @@
 %%  4.      x0, initial point
 %%  5.       m, memory factor
 %%  6. epsilon, terminating tolerance
+%%  7.   delta, skipping tolerance
 %%  8.       f, objective function
 %%  9.       g, gradient function
 %% 10.       H, initial matrix of memoization
 %%
 
 
-function [ opt, x, G ] = L_BFGS (s, sigma, gamma, x0, m, epsilon, f, g, H)
+function [ opt, x, G ] = L_BFGS (s, sigma, gamma, x0, m, epsilon, delta, f, g, H)
     S    = {}; % store all s^k = difference of x
     Y    = {}; % store all y^k = difference of gradient
     RHO  = {}; % store all 1/<s^k, y^k> to reduce the computation
@@ -46,18 +47,23 @@ function [ opt, x, G ] = L_BFGS (s, sigma, gamma, x0, m, epsilon, f, g, H)
         next_g     = g(next_x);
         next_y     = next_g - gradient;
         
-        %% update for next round
+        % update for next round
         x          = next_x;
         gradient   = next_g; 
         n          = norm(next_g);
-        S{end+1}   = next_s;
-        Y{end+1}   = next_y;
-        RHO{end+1} = 1.0/(transpose(next_s) * next_y);
-        [~, l] = size(S);
-        if l > m
-            S = S(:, 2:end);
-            Y = Y(:, 2:end);
-            RHO = RHO(:, 2:end);
+        rho_inv    = transpose(next_s) * next_y;
+        
+        % check skipping condition
+        if rho_inv >= delta
+          S{end+1}   = next_s;
+          Y{end+1}   = next_y;
+          RHO{end+1} = 1.0/rho_inv;
+          [~, l] = size(S);
+          if l > m
+              S = S(:, 2:end);
+              Y = Y(:, 2:end);
+              RHO = RHO(:, 2:end);
+          end
         end
     end
     opt = f(x);
