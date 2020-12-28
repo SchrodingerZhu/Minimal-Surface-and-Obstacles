@@ -102,7 +102,7 @@ function [ opt, x, G ] = C_BFGS(s, sigma, gamma, x0, m, epsilon, f, g, eta)
         d = -gamma_k*grad - [cell2mat(S), gamma_k * cell2mat(Y)] * p;
         
         % backtracking and update
-        alpha = pw_search(s, sigma, gamma, eta, x, d, f, g);
+        alpha = pw_search(s, sigma, gamma, eta, x, d, f, g, epsilon);
         pgrad = grad;
         px    = x;
         x     = x + alpha * d;

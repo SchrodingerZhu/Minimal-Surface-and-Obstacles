@@ -13,7 +13,7 @@
 %%  9.     g, gradient function
 %% 10.   eps, binary search error limit
 %%
-function [res] = pw_search(s, sigma, gamma, eta, x, d, f, g)
+function [res] = pw_search(s, sigma, gamma, eta, x, d, f, g, eps)
   grad  = g(x);
   l     = backtracking(s, sigma, gamma, x, d, grad, f);
   r     = l / sigma;
