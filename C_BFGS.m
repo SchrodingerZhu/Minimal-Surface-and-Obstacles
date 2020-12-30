@@ -15,6 +15,7 @@
 %%  4.       m, memory factor
 %%  5. epsilon, terminating tolerance
 %%  6.     eta, pw search lower bound scaling factor
+%%
 
 function [ x, opt, G ] = C_BFGS(f, g, x0, opts)
     s       = opts.s;
@@ -102,7 +103,7 @@ function [ x, opt, G ] = C_BFGS(f, g, x0, opts)
         gamma_k = (transpose(Y{end}) * S{end})/(transpose(Y{end}) * Y{end});
         
         % calculate p and d
-        iR = R^-1;
+        iR = inv(R);
         tR = transpose(R);
         tiR = transpose(iR);
         p = [tiR*(D + gamma_k*YY)*iR*Sg - gamma_k * tiR * Yg; -iR*Sg];
