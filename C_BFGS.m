@@ -16,7 +16,7 @@
 %%  5. epsilon, terminating tolerance
 %%  6.     eta, pw search lower bound scaling factor
 
-function [ opt, x, G ] = C_BFGS(f, g, x0, opts)
+function [ x, opt, G ] = C_BFGS(f, g, x0, opts)
     s       = opts.s;
     sigma   = opts.sigma;
     gamma   = opts.gamma; 

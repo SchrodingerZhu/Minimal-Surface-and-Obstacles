@@ -18,12 +18,12 @@
 
 function [x, opt] = qpm(f, g, G, GG, H, GH, x0, solver, s_opts, penalty, eps)
     alpha = penalty;
-    p = @(x)(P(x, f, g, G, H, alpha));
+    p = @(x)(P(x, f, G, H, alpha));
     grad = @(x)(Grad(x, g, G, GG, H, GH, alpha));
     x = solver(p, grad, x0, s_opts);
     while not(check(x, G, H, eps))
         alpha = alpha * penalty;
-        p = @(x)(P(x, f, g, G, H, alpha));
+        p = @(x)(P(x, f, G, H, alpha));
         grad = @(x)(Grad(x, g, G, GG, H, GH, alpha));
         x = solver(p, grad, x0, s_opts);
     end
@@ -34,9 +34,15 @@ function [res] = check(x, G, H, eps)
     res = true;
     for i = 1:length(G)
         res = res && (G{i}(x) <= eps);
+        if not(res)
+            return;
+        end
     end
     for i = 1:length(H)
         res = res && (H{i}(x) <= eps) && (H{i}(x) >= -eps);
+        if not(res)
+            return;
+        end
     end
 end
 
