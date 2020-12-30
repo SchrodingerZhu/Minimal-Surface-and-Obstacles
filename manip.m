@@ -15,7 +15,7 @@ function y = manip(X)
     s = (m-1) * (n-1); % number of elements in this matrix
 
     D1 = reshape(M1 - M2, [1, s]); % Delta_down indexed by {2,...,m} and {1,...,n-1}
-    D2 = reshape(M1 - M3, [1, s]); % Delta_right indexed by {2,...,m} and {2,...,n} (?)
+    D2 = reshape(M1 - M4, [1, s]); % Delta_right indexed by {2,...,m} and {2,...,n} (?)
     D3 = reshape(M3 - M2, [1, s]); % Delta_right indexed by {1,...,m-1} and {2,...,n}
     D4 = reshape(M3 - M4, [1, s]); % Delta_down indexed by {2,...,m} and {2,...,n}
     C = ones(1,s);

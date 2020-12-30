@@ -20,7 +20,7 @@ function G = manip2(X)
     [h,k] = size(M1); % the rows and cols in M1. 
 
     D1 = M1 - M2;
-    D2 = M1 - M3;
+    D2 = M1 - M4;
     D3 = M3 - M2;
     D4 = M3 - M4;
 
@@ -30,9 +30,8 @@ function G = manip2(X)
     D40 = reshape(D4, [1, s]); %delta 4
     C = ones(1,s);
 
-    A0 = [a.* ones(1, s).*D10 ; b.*ones(1, s).*D20; c.*ones(1, s).*C]; % each colume
-    B0 = [b.*ones(1, s).*D30; a.* ones(1, s).*D40; c.*ones(1, s).*C];
-    y = [A0,B0];
+    A0 = [a*D10 ; b*D20; c*C]; % each colume
+    B0 = [b*D30; a*D40; c*C];
 
     A = reshape(vecnorm(A0),[h, k]); %?? What's the dimension before?
     % each entry is the vector norm at the grid point. 
