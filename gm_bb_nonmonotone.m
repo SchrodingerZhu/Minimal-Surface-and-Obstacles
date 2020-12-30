@@ -67,7 +67,7 @@ function [x, obj, f_k, grad_k] = gm_bb_nonmonotone(f, grad, x0, opts)
         
         % check whether alpha is of appropriate size
         if alpha >= opts.alpha_ub || alpha <= opts.alpha_lb
-            alpha = delta;
+            alpha = opts.delta;
         end
         
         % nonmonotone line search
