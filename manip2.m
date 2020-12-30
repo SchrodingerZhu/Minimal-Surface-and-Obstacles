@@ -11,9 +11,6 @@ function G = manip2(X)
     M1 = X(2:end,1:end-1); % The original matrix
     M2 = X(1:end-1,1:end-1); % The matrix shifting down
     M3 = X(1:end-1,2:end); % The matrix shifting left
-
-    %M4 = X(1:end-1, 2:end); % same as M3 
-    %M5 = X(1:end-1, 1:end-1) % same as M2
     M4 = X(2: end, 2:end); % shift up
 
     s = numel(M1); % number of elements in this matrix
@@ -30,7 +27,7 @@ function G = manip2(X)
     D40 = reshape(D4, [1, s]); %delta 4
     C = ones(1,s);
 
-    A0 = [a*D10 ; b*D20; c*C]; % each colume
+    A0 = [a*D10 ; b*D20; c*C]; % each colume corresponds to the index difference at one point. 
     B0 = [b*D30; a*D40; c*C];
 
     A = reshape(vecnorm(A0),[h, k]); %?? What's the dimension before?
@@ -38,11 +35,11 @@ function G = manip2(X)
     B = reshape(vecnorm(B0), [h, k]);
 
     SD1 = B(1:end-1,1:end-1);
-    SN1 = D4(1:end-1, 1:end-1);
+    SN1 = -D4(1:end-1, 1:end-1);
     S1 = a^2.*SN1./SD1; % Some problem here? Why is every entry the same?
 
     SD2 = A(1:end-1, 1:end-1);
-    SN2 = D2(1:end-1, end-1);
+    SN2 = -D2(1:end-1, end-1);
     S2 = b^2.*SN2./SD2;
 
     SD3 = B(2:end, 1:end - 1);
@@ -51,11 +48,11 @@ function G = manip2(X)
     S3 = (b^2.*SN31 + a^2.*SN32)./SD3;
 
     SD4 = A(2:end, 2:end);
-    SN4 = D1(2:end, 2:end);
+    SN4 = -D1(2:end, 2:end);
     S4 = a^2.*SN4./SD4;
 
     SD5 = B(2:end, 2:end);
-    SN5 = D3(2:end, 2:end);
+    SN5 = -D3(2:end, 2:end);
     S5 = b^2.*SN5./SD5;
 
     SD6 = A(1:end-1, 2:end);
