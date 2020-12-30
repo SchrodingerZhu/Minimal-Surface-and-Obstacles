@@ -17,13 +17,14 @@
 %%
 
 function [x, opt] = qpm(f, g, G, GG, H, GH, x0, solver, s_opts, penalty, eps)
-    p = @(x)(P(x, f, g, G, H, penalty));
-    grad = @(x)(Grad(x, g, G, GG, H, GH, penalty));
+    alpha = penalty;
+    p = @(x)(P(x, f, g, G, H, alpha));
+    grad = @(x)(Grad(x, g, G, GG, H, GH, alpha));
     x = solver(p, grad, x0, s_opts);
     while not(check(x, G, H, eps))
-        penalty = penalty * penalty;
-        p = @(x)(P(x, f, g, G, H, penalty));
-        grad = @(x)(Grad(x, g, G, GG, H, GH, penalty));
+        alpha = alpha * penalty;
+        p = @(x)(P(x, f, g, G, H, alpha));
+        grad = @(x)(Grad(x, g, G, GG, H, GH, alpha));
         x = solver(p, grad, x0, s_opts);
     end
     opt = f(x);
