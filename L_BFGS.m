@@ -38,6 +38,7 @@ function [ x, opt, G ] = L_BFGS (f, g, x0, opts)
     %% main procedure
     gradient   = g(x);
     n          = norm(gradient);
+    iter       = 0;
     while n > epsilon
         q          = gradient; 
         G{end + 1} = n;
