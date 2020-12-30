@@ -1,5 +1,10 @@
-function y = f(X, m, n) %make the function calculation efficient
-y = sum(vecnorm(manip(addbd(X, m, n), m, n)));
+function y = f(x, m, n, r) %make the function calculation efficient
+    if length(x) ~= (m-2)*(n-2)
+        fprintf("Wrong dimension!\n")
+    end
+    X = reshape(x, m-2, []);
+    y = sum(vecnorm(manip(addbd(X, r))));
+end
 
 
 
