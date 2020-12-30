@@ -3,19 +3,26 @@
 %% Created by Schrodinger ZHU <i@zhuyi.fan> for DDA/CIE6010 Project
 %%
 %% USAGE:
+%%  1.       f, objective function
+%%  2.       g, gradient function
+%%  3.      x0, initial point
+%%  4.    opts, options
+%%
+%% OPTIONS:
 %%  1.       s, initial value of line searching
 %%  2.   sigma, line searching exponential scaling factor
 %%  3.   gamma, line searching condition scaling factor
-%%  4.      x0, initial point
-%%  5.       m, memory factor
-%%  6. epsilon, terminating tolerance
-%%  7.   delta, skipping tolerance
-%%  8.       f, objective function
-%%  9.       g, gradient function
-%% 10.     eta, pw search lower bound scaling factor
+%%  4.       m, memory factor
+%%  5. epsilon, terminating tolerance
+%%  6.     eta, pw search lower bound scaling factor
 
-function [ opt, x, G ] = C_BFGS(s, sigma, gamma, x0, m, epsilon, f, g, eta)
-    
+function [ opt, x, G ] = C_BFGS(f, g, x0, opts)
+    s       = opts.s;
+    sigma   = opts.sigma;
+    gamma   = opts.gamma; 
+    m       = opts.m;
+    epsilon = opts.epsilon;
+    eta     = opts.eta;
     % memoization
     
     
