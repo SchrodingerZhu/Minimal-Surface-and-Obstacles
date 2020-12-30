@@ -49,6 +49,9 @@ function [ x, opt, G ] = C_BFGS(f, g, x0, opts)
     YY       = []; % previous Y * Y
     
     %% main procedure
+    iter = 0;
+    opt = f(x);
+    fprintf("ITER ; OBJ.VAL ; G.NORM ; STEP.SIZE\n");
     while n > epsilon
         % update memoization
         G{end+1} = n;                   
@@ -116,8 +119,10 @@ function [ x, opt, G ] = C_BFGS(f, g, x0, opts)
         x     = x + alpha * d;
         grad  = g(x);
         n     = norm(grad);
-        
+        iter  = iter + 1;
+        opt = f(x);
+        fprintf("[%4i] ; %2.6f ; %2.6f ; %1.4f\n", iter, opt, n, alpha);
     end
-    opt = f(x);
+    
     
 end

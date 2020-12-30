@@ -38,7 +38,9 @@ function [ x, opt, G ] = L_BFGS (f, g, x0, opts)
     %% main procedure
     gradient   = g(x);
     n          = norm(gradient);
+    opt        = f(x);
     iter       = 0;
+    fprintf("ITER ; OBJ.VAL ; G.NORM ; STEP.SIZE; SKIP \n");
     while n > epsilon
         q          = gradient; 
         G{end + 1} = n;
@@ -78,6 +80,10 @@ function [ x, opt, G ] = L_BFGS (f, g, x0, opts)
               RHO = RHO(:, 2:end);
           end
         end
+        
+        iter = iter + 1;
+        opt = f(x);
+        fprintf("[%4i] ; %2.6f ; %2.6f ; %1.4f; %d\n", iter, opt, n, alpha, rho_inv < delta);
     end
-    opt = f(x);
+    
 end
