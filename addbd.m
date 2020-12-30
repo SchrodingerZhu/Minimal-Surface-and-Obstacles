@@ -1,16 +1,51 @@
-function Y = addbd(X, m, n)
-% Need to rewrite the parameter part
-a1 = 0;
-b1 = 1;
-a2 = 0;
-b2 = 1;
-L1 = b1 - a1;
-L2 = b2 - a2;
-t1 = a1:L1/m:b1;
-t2 = a2+L2/n:L2/n:b2-L2/n;
-bd1 = r(a2.*ones(size(t1)), t1); % left
-bd2 = r(b2.*ones(size(t1)), t1); % right
-bd3 = r(a1.*ones(size(t2)), t2); % up
-bd4 = r(b1.*ones(size(t2)), t2); % down
-Z = [bd3; X; bd4];
-Y = [bd1, Z, bd2];
+% add boundary to the variable
+function Y = addbd(X, r)
+
+% === INPUT ==========
+% X: variable of dimension (m-2)-by-(n-2)
+% r: boundary function r(x,y)
+
+% === OUTPUT ==========
+% Y: variable of dimension m-by-n formed by augmenting X with boundary
+    
+    [m, n] = size(X);
+    m = m + 2;
+    n = n + 2;
+    % corners of the gird
+    a1 = 0;
+    b1 = 1;
+    a2 = 0;
+    b2 = 1;
+    
+    % length and width of the grid
+    L1 = b1 - a1;
+    L2 = b2 - a2;
+    
+    % x- and y-coordinates of the nodes
+    t1 = a1: L1/(m-1): b1;   % x-coordinate
+    t2 = b2-L2/(n-1): -L2/(n-1): a2+L2/(n-1);   % y-coordinate
+%     disp(t1)
+%     disp(t2)
+    
+    % boundary
+    r_left = @(y) r(a1, y);
+    r_right = @(y) r(b1, y);
+    r_up = @(x) r(x, b2);
+    r_down = @(x) r(x, a2);
+    
+    bd_left = arrayfun(r_left, t2)';   % left
+    bd_right = arrayfun(r_right, t2)';   % right
+    bd_up = arrayfun(r_up, t1);   % up
+    bd_down = arrayfun(r_down, t1);   % down
+%     disp(bd_left)
+%     fprintf("= = = = =\n")
+%     disp(bd_right)
+%     fprintf("= = = = =\n")
+%     disp(bd_up)
+%     fprintf("= = = = =\n")
+%     disp(bd_down)
+%     fprintf("= = = = =\n")
+    % add boundary
+    Z = [bd_left, X, bd_right];
+    Y = [bd_up; Z; bd_down];
+end
