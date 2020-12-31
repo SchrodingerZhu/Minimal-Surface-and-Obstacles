@@ -3,5 +3,6 @@ function y = g(x, m, n, r)
         fprintf("Wrong dimension!\n")
     end
     X = reshape(x, m-2, []);
-    y = 0.5 * manip2(addbd(X, r))';
+    y = manip2(addbd(X, r))';
+    y = y / 2;
 end
