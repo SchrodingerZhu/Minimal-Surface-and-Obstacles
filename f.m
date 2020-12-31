@@ -3,11 +3,5 @@ function y = f(x, m, n, r) %make the function calculation efficient
         fprintf("Wrong dimension!\n")
     end
     X = reshape(x, m-2, []);
-    y = sum(vecnorm(manip(addbd(X, r))));
+    y = sum(0.5 * vecnorm(manip(addbd(X, r))));
 end
-
-
-
-
-
-

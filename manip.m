@@ -1,11 +1,12 @@
 function y = manip(X)
     % Inintialize parameters
-    [m, n] = size(X);
+    [m, n] = size(X);  % the matrix after adding the boundary. 
     L1 = 1;
     L2 = 1;
     a = L1/(m-1);
     b = L2/(n-1);
-    c = L1*L2 / (m-1)*(n-1);
+    % c = L1*L2 / (m-1)*(n-1);
+    c = a*b;
     
     M1 = X(2:end, 1:end-1); % The original matrix
     M2 = X(1:end-1, 1:end-1); % The matrix shifting down
@@ -14,6 +15,7 @@ function y = manip(X)
 
     s = (m-1) * (n-1); % number of elements in this matrix
 
+    % possible problem: the sign of delta 
     D1 = reshape(M1 - M2, [1, s]); % Delta_down indexed by {2,...,m} and {1,...,n-1}
     D2 = reshape(M1 - M4, [1, s]); % Delta_right indexed by {2,...,m} and {2,...,n} (?)
     D3 = reshape(M3 - M2, [1, s]); % Delta_right indexed by {1,...,m-1} and {2,...,n}

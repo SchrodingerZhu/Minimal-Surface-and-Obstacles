@@ -6,7 +6,8 @@ function G = manip2(X)
     L2 = 1;
     b = L1/(m-1);
     a = L2/(n-1);
-    c = L1*L2/(m-1)*(n-1);
+    %c = L1*L2/(m-1)*(n-1);
+    c = a*b;
 
     M1 = X(2:end,1:end-1); % The original matrix
     M2 = X(1:end-1,1:end-1); % The matrix shifting down
