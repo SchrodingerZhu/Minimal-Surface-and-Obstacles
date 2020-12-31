@@ -1,29 +1,25 @@
-% opts.maxit = 20000; opts.tol = 10^(-5);
-% opts.gamma = 0.1; opts.s = 0.001;
-% opts.sigma = 0.5; opts.m = 1; opts.e = 10^(-7);
-function [x,obj,iter] = momentum(f,x0,opts)
+function [x,objv,iter] = momentum(obj, grad, x0,opts)
+fprintf("momentum");
+fprintf("ITER ; OBJ.VAL; STEP.SIZE\n");
 iter = 0;
-x1 = [0, x0];
-beta = 2/(iter+2); % Other rules to select step size
-while norm(f.grad(x1(2)) > opts.tol
-    y = x1(2) + beta*(x1(2) - x1(1));
-    d = -f.grad(y);
+x_old = zeros(size(x0));
+x = x0;
+% Other rules to select step size
+while norm(grad(x)) > opts.tol
+    beta = 2/(iter+2);
+    %y = x + beta*(x - x_old);
+    d = -grad(x);
     alpha = opts.s;
     i = 0;
-    while (f.obj(y + alpha * d) - f.obj(y) >= -opts.gamma*opts.alpha* (norm(d)^2)% &&(i <10^4)
+    while (obj(x + alpha * d) - obj(x) >= -opts.gamma * alpha * norm(d)^2) && (i < 5)
         alpha = alpha * opts.sigma;
         i = i+1;
     end
-%     i
-%     alpha
-    xtemp = y + alpha*d;
-    
-    x1(1) = x1(2);
-    x1(2) = xtemp;
-    
+    xtemp = x + alpha * d + beta*(x - x_old);
+    x_old = x;
+    x = xtemp;
     iter = iter + 1;
+    fprintf("[%4i] ; %2.6f ; %1.4f\n", iter, obj(x),  alpha)
 end
-    
-    x = x1(2);
-    obj = f.obj(x);
+    objv = obj(x);
 end
