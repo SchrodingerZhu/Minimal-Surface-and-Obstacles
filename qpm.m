@@ -31,7 +31,7 @@ function [x, opt] = qpm(f, g, G, GG, H, GH, x0, solver, s_opts, penalty, eps)
 end
 
 function [res] = check(x, G, H, eps)
-    res = G(x) <= eps && (H(x) <= eps) && (H(x) >= -eps);
+    res = all((G(x) <= eps) & (H(x) <= eps) & (H(x) >= -eps));
 end
 
 function [res] = P(x, f, G, H, penalty)
