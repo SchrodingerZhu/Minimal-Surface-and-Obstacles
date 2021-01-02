@@ -22,10 +22,8 @@ function Y = addbd(X, r)
     L2 = b2 - a2;
     
     % x- and y-coordinates of the nodes
-    t1 = a1: L1/(m-1): b1;   % x-coordinate
-    t2 = b2-L2/(n-1): -L2/(n-1): a2+L2/(n-1);   % y-coordinate
-%     disp(t1)
-%     disp(t2)
+    t1 = a1: L1/(n-1): b1;   % x-coordinate
+    t2 = b2-L2/(m-1): -L2/(m-1): a2+L2/(m-1);   % y-coordinate
     
     % boundary
     r_left = @(y) r(a1, y);
@@ -37,14 +35,7 @@ function Y = addbd(X, r)
     bd_right = arrayfun(r_right, t2)';   % right
     bd_up = arrayfun(r_up, t1);   % up
     bd_down = arrayfun(r_down, t1);   % down
-%     disp(bd_left)
-%     fprintf("= = = = =\n")
-%     disp(bd_right)
-%     fprintf("= = = = =\n")
-%     disp(bd_up)
-%     fprintf("= = = = =\n")
-%     disp(bd_down)
-%     fprintf("= = = = =\n")
+    
     % add boundary
     Z = [bd_left, X, bd_right];
     Y = [bd_up; Z; bd_down];
