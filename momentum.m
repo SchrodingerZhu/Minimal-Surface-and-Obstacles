@@ -1,39 +1,51 @@
-% opts.maxit = 20000; opts.tol = 10^(-5);
-% opts.gamma = 0.1; opts.s = 0.001;
-% opts.sigma = 0.5; opts.m = 1; opts.e = 10^(-7);
-function [x,obj,iter] = momentum(f, grad, x0, opts)
-iter = 0;
-x = x0;
-x_old = zeros(size(x0));
-g = grad(x);
-ng = norm(g);
+%% input data
+% dimensions
+m = 30;
+n = 30;
+dim_x = (m-2) * (n-2);
 
-fprintf("ITER ; OBJ.VAL ; GRAD.NORM ; STEP.SIZE\n")
-while ng > opts.tol
-    beta = 2/(iter+2); % Other rules to select step size
-    y = x + beta*(x-x_old);
-    g = grad(x);
-    d = -g;
-    ng = norm(g);
-    alpha = opts.s;
-    i = 0;
-    
-    while (f(x + alpha * d)) - f(x) >= -opts.gamma*alpha*ng^2% &&(i <10^4)
-        alpha = alpha * opts.sigma;
-        i = i + 1;
-    end
-    
-    fprintf("NUM.BACKTRACK = %u\n", i)
-    
-    fprintf("[%4i] ; %2.6f ; %2.6f ; %2.6f\n", iter, f(x), ng, alpha);
+% initial point
+x0 = rand(dim_x, 1);
 
-    xtemp = y + alpha*d;
-    
-    x_old = x;
-    x = xtemp;
-    
-    iter = iter + 1;
-end
-    
-    obj = f.obj(x);
-end
+% boundary function
+r = @(x,y) 1+cos(1/(x+0.001));
+
+figure(1)
+X0 = reshape(x0, [m-2, n-2]);
+tri_visual (0, 1, 0, 1, addbd(X0, r)); 
+hold on
+% objective function and gradient
+obj = @(x) f(x, m, n, r);
+grad = @(x) g(x, m, n, r);
+
+%% options
+% gradient method with Armijo backtracking line search
+g_opts = struct('maxit', 1e4, 'tol', 1e-5, 'gamma', 0.5, 'sigma', 0.5, 's', 1);
+
+% gradient method with Barzilai-Borwein step
+bb_opts = struct('maxit', 1e3, 'tol', 1e-5, 'step', 1);
+
+% gradient method with Barzilai-Borwein step and nonmonotone line search
+bbn_opts = struct('maxit', 1e3, 'tol', 1e-5, 'alpha_lb', 1e-4, 'alpha_ub', 1e4, 'delta', 1, 'gamma', 0.5, 'sigma', 0.5, 'M', 5);
+
+% C-BFGS
+c_opts = struct('m', 25, 'epsilon', 1e-5, 'eta', 0.2, 'gamma', 0.1, 'sigma', 0.5, 's', 1);
+% L-BFGS
+s_opts = struct('s', 1, 'sigma', 0.5, 'gamma', 0.1, 'm', 10, 'epsilon', 1e-7, 'delta', 1e-4, 'H', eye(dim_x)); % notice N is the size of X's vector
+
+% momentum 
+m_opts = struct('beta', 0.5, 'tol', 1e-5, 'L0', 0.1, 'sigma', 0.5);
+
+
+%% minimization algorithms
+% [x, obj, ~, ~] = gm_armijo(obj, grad, x0, g_opts);
+% [x, obj, ~, ~] = gm_bb(obj, grad, x0, bb_opts);
+% [x, obj, ~, ~] = gm_bb_nonmonotone(obj, grad, x0, bbn_opts);
+% [x, opt, G] = L_BFGS (obj, grad, x0, s_opts);
+% [x, opt, G] = C_BFGS (obj, grad, x0, c_opts);
+[x,obj,iter] = momentum(obj, grad, x0, m_opts);
+
+% plot
+figure(2)
+X = reshape(x, [m-2, n-2]);
+tri_visual (0, 1, 0, 1, addbd(X, r));  
