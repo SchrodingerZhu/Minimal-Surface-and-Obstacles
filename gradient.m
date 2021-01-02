@@ -1,14 +1,14 @@
 % gradient
-function grad = g(x, m, n, r)
+function grad = gradient(x, m, n, r)
     if length(x) ~= (m-2)*(n-2)
         fprintf("Wrong dimension!\n")
     end
     X = reshape(x, m-2, []);
-    grad = g_no_bd(addbd(X, r));
+    grad = g_mat(addbd(X, r));
 end
 
-% gradient without boundary
-function g = g_no_bd(X)
+% gradient with matrix input
+function g = g_mat(X)
 % === INPUT ==========
 % X: m-by-n variable with boundary condition
 

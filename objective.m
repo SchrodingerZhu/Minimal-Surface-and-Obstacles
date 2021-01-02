@@ -1,14 +1,14 @@
 % objective function
-function y = f(x, m, n, r)
+function y = objective(x, m, n, r)
     if length(x) ~= (m-2)*(n-2)
         fprintf("Wrong dimension!\n")
     end
     X = reshape(x, m-2, []);
-    y = sum(vecnorm(f_no_bd(addbd(X, r))));
+    y = sum(f_mat(addbd(X, r)));
 end
 
-% objective function without boundary
-function obj = f_no_bd(X)
+% objective function with matrix input
+function obj = f_mat(X)
 % === INPUT ==========
 % X: m-by-n variable with boundary condition
 
@@ -36,5 +36,5 @@ function obj = f_no_bd(X)
     M1 = M1';
     M2 = M2';
     
-    obj = sum(0.5 * vecnorm([M1,M2]));   % vector norm on each column
+    obj = sum(0.5 * sqrt(sum([M1,M2].^2)));   % vector norm on each column
 end
