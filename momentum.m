@@ -1,25 +1,27 @@
 function [x,objv,iter] = momentum(obj, grad, x0,opts)
 fprintf("momentum");
-fprintf("ITER ; OBJ.VAL; STEP.SIZE\n");
+fprintf("ITER ; OBJ.VAL; GRAD.NORM; STEP.SIZE\n");
 iter = 0;
 x_old = zeros(size(x0));
 x = x0;
+L = opts.L0; % adjust the liptistz constant
 % Other rules to select step size
 while norm(grad(x)) > opts.tol
-    beta = 2/(iter+2);
-    %y = x + beta*(x - x_old);
-    d = -grad(x);
-    alpha = opts.s;
+    y = x + opts.beta*(x - x_old);
+    d = grad(x);
+    alpha = (1-opts.beta)/L;
     i = 0;
-    while (obj(x + alpha * d) - obj(x) >= -opts.gamma * alpha * norm(d)^2) && (i < 5)
-        alpha = alpha * opts.sigma;
-        i = i+1;
+    delta = opts.beta*(x - x_old) - alpha * d;
+    while obj(y - alpha*d) > obj(x) + d'*delta + L/2*(norm(delta))^2
+        L = L/opts.sigma;
+        alpha = (1-opts.beta)/L;
+        delta = opts.beta*(x - x_old) - alpha * d;
     end
-    xtemp = x + alpha * d + beta*(x - x_old);
+    xtemp = y - alpha * d;
     x_old = x;
     x = xtemp;
     iter = iter + 1;
-    fprintf("[%4i] ; %2.6f ; %1.4f\n", iter, obj(x),  alpha)
+    fprintf("[%4i] ; %2.6f ;%2.6f; %1.4f\n", iter, obj(x), norm(grad(x)), alpha)
 end
     objv = obj(x);
 end
