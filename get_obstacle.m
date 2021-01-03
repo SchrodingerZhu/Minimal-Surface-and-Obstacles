@@ -18,7 +18,7 @@ function [X, Y, Z] = get_obstacle(x, y, div, kind, opts)
                 end
             end
         end
-        Z = sqrt(R^2 - (X-x).^2 - (Y-y).^2);
+        Z = sqrt(R^2 - (X-x).^2 - (Y-y).^2) / div;
     elseif strcmp(kind, 'cone')
         R = opts.radius;
         H = opts.height;
