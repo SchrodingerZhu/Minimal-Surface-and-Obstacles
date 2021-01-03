@@ -55,7 +55,7 @@ function [res] = Hess(x, h, G, GG, penalty, eps)
     gg = sparse(GG(x));
     g  = G(x);
     U1  = sparse(gg * diag(g > 0));
-    P5 = gg(:, 1:end) * U1(:, 1:end)' + eps * speye(length(x));
+    P5 = gg * U1' + eps * speye(length(x));
     res = P1 + penalty * P5; 
 end
 
