@@ -19,7 +19,7 @@
 %%
 
 
-function [ x, opt, G ] = PW_L_BFGS (f, g, x0, opts)
+function [ x, opt, F, G, T, method ] = PW_L_BFGS (f, g, x0, opts)
     s       = opts.s;
     sigma   = opts.sigma;
     gamma   = opts.gamma; 
@@ -29,21 +29,27 @@ function [ x, opt, G ] = PW_L_BFGS (f, g, x0, opts)
     H       = opts.H;
 
     
-    S    = {}; % store all s^k = difference of x
-    Y    = {}; % store all y^k = difference of gradient
-    RHO  = {}; % store all 1/<s^k, y^k> to reduce the computation
-    G    = {}; % record gradient norm
-    x    = x0; % initialize x
+    S      = {}; % store all s^k = difference of x
+    Y      = {}; % store all y^k = difference of gradient
+    RHO    = {}; % store all 1/<s^k, y^k> to reduce the computation
+    F      = []; % record objective function value
+    G      = []; % record gradient norm
+    T      = [0]; % record elapsed time
+    x      = x0; % initialize x
+    method = "L-BFGS Method";
     
     %% main procedure
     gradient   = g(x);
     n          = norm(gradient);
     opt        = f(x);
     iter       = 0;
+    fprintf("− − − L-BFGS method;\n");
     fprintf("ITER ; OBJ.VAL ; G.NORM ; STEP.SIZE\n");
     while n > epsilon
+        tic
         q          = gradient; 
-        G{end + 1} = n;
+        G(end+1)   = n;
+        F(end+1)   = opt;
         [~, l]     = size(S);
         a          = zeros(l, 1);
         for i=l:-1:1
@@ -81,6 +87,11 @@ function [ x, opt, G ] = PW_L_BFGS (f, g, x0, opts)
         iter = iter + 1;
         opt = f(x);
         fprintf("[%4i] ; %2.6f ; %2.6f ; %1.4f\n", iter, opt, n, alpha);
+        
+        T(end+1) = toc;
     end
     
+    G(end+1) = n;
+    F(end+1) = opt;
+    T = cumsum(T);
 end
