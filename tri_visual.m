@@ -15,4 +15,7 @@ function [] = tri_visual (x0, x1, y0, y1, Z)
     [X, Y]  = meshgrid(x, y);
     T       = delaunay(X, Y);
     trimesh(T, X, Y, Z);
+    xlabel("$x$", "interpreter", "latex")
+    ylabel("$y$", "interpreter", "latex")
+%     colorbar;
 end

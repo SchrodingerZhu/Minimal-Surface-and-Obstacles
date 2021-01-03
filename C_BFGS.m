@@ -17,7 +17,7 @@
 %%  6.     eta, pw search lower bound scaling factor
 %%
 
-function [ x, opt, G ] = C_BFGS(f, g, x0, opts)
+function [ x, opt, F, G, T, method ] = C_BFGS(f, g, x0, opts)
     s       = opts.s;
     sigma   = opts.sigma;
     gamma   = opts.gamma; 
@@ -25,7 +25,6 @@ function [ x, opt, G ] = C_BFGS(f, g, x0, opts)
     epsilon = opts.epsilon;
     eta     = opts.eta;
     % memoization
-    
     
     %% initialization with one step of gradient descent
     
@@ -39,9 +38,12 @@ function [ x, opt, G ] = C_BFGS(f, g, x0, opts)
     n        = norm(grad);
     
     % memoization
-    G = {};
     S = {};
     Y = {};
+    F      = []; % record objective function value
+    G      = []; % record gradient norm
+    T      = [0]; % record elapsed time
+    method = "C-BFGS Method"; % name of the optimization method
     
     % state transformation
     R        = [];       % previous R
@@ -51,10 +53,13 @@ function [ x, opt, G ] = C_BFGS(f, g, x0, opts)
     %% main procedure
     iter = 0;
     opt = f(x);
+    fprintf("− − − C-BFGS method;\n");
     fprintf("ITER ; OBJ.VAL ; G.NORM ; STEP.SIZE\n");
     while n > epsilon
+        tic
         % update memoization
-        G{end+1} = n;                   
+        G(end+1) = n;   
+        F(end+1) = opt;
         S{end+1} = x - px;
         Y{end+1} = grad - pgrad;
         [~, l]   = size(S);
@@ -122,7 +127,11 @@ function [ x, opt, G ] = C_BFGS(f, g, x0, opts)
         iter  = iter + 1;
         opt = f(x);
         fprintf("[%4i] ; %2.6f ; %2.6f ; %1.4f\n", iter, opt, n, alpha);
+        
+        T(end+1) = toc;
     end
     
-    
+    G(end+1) = n;
+    F(end+1) = opt;
+    T = cumsum(T);
 end
