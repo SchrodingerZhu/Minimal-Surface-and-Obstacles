@@ -16,16 +16,22 @@
 %% 11,     eps, constraint checking tolerance
 %%
 
-function [x, opt] = qpm(f, g, G, GG, H, GH, x0, solver, s_opts, penalty, eps)
+function [x, opt, ng, fs, iter] = qpm(f, g, G, GG, H, GH, x0, solver, s_opts, penalty, eps)
     alpha = penalty;
     p = @(x)(P(x, f, G, H, alpha));
     grad = @(x)(Grad(x, g, G, GG, H, GH, alpha));
     x = solver(p, grad, x0, s_opts);
+    fs = [f(x)];
+    ng = [norm(max(0, G(x)))];
+    iter = [];
     while not(check(x, G, H, eps))
         alpha = alpha * penalty;
         p = @(x)(P(x, f, G, H, alpha));
         grad = @(x)(Grad(x, g, G, GG, H, GH, alpha));
-        x = solver(p, grad, x0, s_opts);
+        [x, ~, r] = solver(p, grad, x0, s_opts);
+        fs(end+1) = f(x);
+        ng(end+1) = norm(max(0, G(x)));
+        iter(end+1) = numel(r);
     end
     opt = f(x);
 end
